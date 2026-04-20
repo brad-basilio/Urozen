@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   FaHeartbeat,
   FaShieldAlt,
@@ -23,18 +23,119 @@ import {
   FaCalendarAlt,
   FaVideo,
   FaMinus,
+  FaEnvelope,
+  FaBriefcaseMedical,
+  FaLinkedinIn,
 } from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
+import { BsTiktok, BsYoutube } from "react-icons/bs";
 
 export default function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [openModalFaq, setOpenModalFaq] = useState<number | null>(null);
+  const [doctorTab, setDoctorTab] = useState("Urólogos");
+
+  const UROLOGISTS = [
+    {
+      nombre: "Dr. Hugo Gallo",
+      unidad: "Dirección Médica - Urología",
+      cmp_rne: "CMP: 14960 | RNE: 6571",
+      bio: "Director Médico de Urozen. Especialista en Urología por la UNMSM con más de 40 años de experiencia profesional. Altamente capacitado para realizar procedimientos seguros en el tratamiento de cálculos renales, HBP y prostatitis.",
+      image:
+        "https://www.urozen.pe/web/image/221687-554642d4/Dr.%20Hugo%20Gallo.png",
+    },
+    {
+      nombre: "Dr. Jorge Saldaña",
+      unidad: "Urología, Medicina Funcional y Regenerativa",
+      cmp_rne: "CMP: 35538 | RNE: 16585",
+      bio: "Profesor de la Cátedra de Urología en UNMSM y UPCH. Un urólogo referente en el diagnóstico y tratamiento de trastornos del sistema urinario y reproductivo, con amplia experiencia en cirugías reconstructivas y estéticas.",
+      image:
+        "https://www.urozen.pe/web/image/630783-e550efec/Dr.%20Jorge%20Salda%C3%B1a.2.png",
+    },
+    {
+      nombre: "Dr. Alejandro Hernández",
+      unidad: "Unidad de Urología",
+      cmp_rne: "CMP: 107747 | RNE: 048793",
+      bio: "Médico especialista en urología con más de 8 años de experiencia. Destacado por su formación internacional y capacitación en estética íntima masculina, procedimientos urológicos y de próstata avanzados.",
+      image:
+        "https://www.urozen.pe/web/image/529424-8c36d4a1/DOCTOR%20ALEJANDRO..png",
+    },
+    {
+      nombre: "Dr. Juan Pablo Castillo",
+      unidad: "Andrología y Urología Estética",
+      cmp_rne: "CMP: 59250 | RNE: 33715",
+      bio: "Urólogo con más de 10 años de experiencia laboral en el sector salud. Miembro de la Sociedad Peruana, Española y Europea de Urología. Especialista en tratamientos innovadores con tecnología de vanguardia.",
+      image:
+        "https://www.urozen.pe/web/image/660728-cde1b5af/Dr.%20Juan%20Pablo%20Castillo.png",
+    },
+    {
+      nombre: "Dr. Augusto Postigo",
+      unidad: "Unidad de Urodinamia y Piso Pélvico",
+      cmp_rne: "CMP: 26844 | RNE: 17055",
+      bio: "Jefe de la Unidad de Urodinamia. Especialista en Urología con más de 24 años de experiencia. Desarrolló el Protocolo de Urodinamia en UROZEN para un diagnóstico preciso de patologías miccionales.",
+      image:
+        "https://www.urozen.pe/web/image/451789-3ccef8b3/Dr.%20Augusto%20Postigo.png",
+    },
+    {
+      nombre: "Dr. Victor Machuca",
+      unidad: "Urología Oncológica y Laparoscopia",
+      cmp_rne: "CMP: 50241 | RNE: 24653",
+      bio: "Especialista en cirugía oncológica, laparoscópica y mínimamente invasiva con más de 15 años de trayectoria. Fellowship en Laparoscopía y Cirugía Robótica en Urología Oncológica.",
+      image:
+        "https://www.urozen.pe/web/image/630781-ac1faed6/Dr.%20Victor%20Machuca%20.png",
+    },
+    {
+      nombre: "Dr. Ibrahín Echeverría",
+      unidad: "Unidad de Urología General",
+      cmp_rne: "CMP: 079917 | RNE: 033974",
+      bio: "Jefe de la Unidad de Urología General con más de 34 años de experiencia. Especialista en temas prostáticos, enfermedades de transmisión sexual y dolor pélvico crónico.",
+      image:
+        "https://www.urozen.pe/web/image/451791-99eda8e4/Dr.%20Ibrahin%20Echeverria%20.png",
+    },
+    {
+      nombre: "Dr. Daniel Galarreta",
+      unidad: "Cirugía General y Urología",
+      cmp_rne: "CMP: 79529 | RNE: 032703",
+      bio: "Experto en cirugías de próstata con más de 15 años de experiencia. Capacitado para realizar procedimientos para enfermedades prostáticas, cálculos renales y dolor pélvico.",
+      image:
+        "https://www.urozen.pe/web/image/630780-266aaff0/Dr.%20Daniel%20Galarreta.png",
+    },
+  ];
+
+  const OTHERS = [
+    {
+      nombre: "Nut. Cinthia Aranda",
+      unidad: "Unidad de Nutrición",
+      cmp_rne: "Colegio de Nutricionistas del Perú N° 4998",
+      bio: "Especialista en Nutrición Clínica con más de 10 años de experiencia en el sector salud. Enfocada en medicina funcional y bienestar integral.",
+      image:
+        "https://www.urozen.pe/web/image/451793-b09f521a/Nutricionista%20Cinthia%20Nueva.jpg",
+    },
+    {
+      nombre: "Ps. Cl. Carlos Lescano",
+      unidad: "Unidad de Psicología",
+      cmp_rne: "CPSP: 5623",
+      bio: "Especialista en Psiconeuroinmunología y Psicología del bienestar. Experto en el manejo emocional de pacientes con patologías crónicas.",
+      image:
+        "https://www.urozen.pe/web/image/221695-84ba15be/Dr.%20Carlos%20Lescano.png",
+    },
+    {
+      nombre: "Dra. Irene Faneite",
+      unidad: "Unidad de Medicina Interna",
+      cmp_rne: "CMP: 79746 | RNE: 32522",
+      bio: "Médico internista especializada en patologías complejas e infectología, brindando un soporte integral a los tratamientos urológicos.",
+      image:
+        "https://www.urozen.pe/web/image/702798-229fd26f/DRA%20IRENE_FONDO%20BLANCO.png",
+    },
+  ];
   const [selectedService, setSelectedService] = useState<any | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedSpecialty, setSelectedSpecialty] = useState("");
 
   // Handle Navbar styling on scroll
   useEffect(() => {
@@ -311,7 +412,15 @@ export default function App() {
   ];
 
   return (
-    <div className="bg-white min-h-screen overflow-x-hidden font-sans text-[#4B4D54] border-x-[12px] border-t-[12px] border-slate-50 selection:bg-[#ffaa00] selection:text-[#4B4D54] pb-20 md:pb-0 lg:border-b-[12px]">
+    <div className="bg-white min-h-screen overflow-x-hidden font-sans text-[#4B4D54] selection:bg-[#ffaa00] selection:text-[#4B4D54] pb-20 md:pb-0 relative">
+      {/* Global Clinical Texture (CSS Pattern) */}
+      <div
+        className="absolute inset-0 opacity-[0.4] pointer-events-none z-0"
+        style={{
+          backgroundImage: `radial-gradient(#4B4D54 0.5px, transparent 0.5px)`,
+          backgroundSize: "30px 30px",
+        }}
+      ></div>
       {/* 📱 FLOATING ELEMENTS */}
       <a
         href="https://wa.me/51970896337"
@@ -352,7 +461,7 @@ export default function App() {
               <img
                 src="https://www.urozen.pe/web/image/website/1/logo/Urozen?unique=e95eb16"
                 alt="Urozen Logo"
-                className="h-[42px] w-auto drop-shadow-sm transition-transform hover:scale-105"
+                className="h-[80px] w-auto drop-shadow-sm transition-transform hover:scale-105"
                 referrerPolicy="no-referrer"
               />
             </a>
@@ -987,164 +1096,234 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* 5. 🏆 PRUEBA SOCIAL & VIDEO */}
-      <section className="bg-[#4B4D54] py-24 relative overflow-hidden">
+      {/* 5. 🏆 PRUEBA SOCIAL & REELS - IMPROVED VISIBILITY & TEXTURE */}
+      <section className="bg-[#ffaa00] py-32 relative overflow-hidden w-full border-y-4 border-[#4B4D54]/5">
+        {/* Reliable CSS Grid Texture */}
+        <div
+          className="absolute inset-0 opacity-[0.15] pointer-events-none mix-blend-multiply"
+          style={{
+            backgroundImage: `linear-gradient(#4B4D54 1px, transparent 1px), linear-gradient(90deg, #4B4D54 1px, transparent 1px)`,
+            backgroundSize: "20px 20px",
+          }}
+        ></div>
+
         <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Stats & Badges */}
-            <div>
-              <h2 className="text-5xl md:text-6xl lg:text-7xl font-heading font-light text-white mb-12 tracking-tight">
-                Números que respaldan <br />
-                <span className="font-bold text-[#ffaa00]">tu confianza.</span>
+          <div className="grid lg:grid-cols-2 gap-20 items-center">
+            {/* Left: Stats & Info */}
+            <div className="text-[#4B4D54]">
+              <div className="inline-flex items-center gap-3 bg-[#4B4D54]/10 rounded-full px-6 py-2 border border-[#4B4D54]/20 mb-8 backdrop-blur-sm">
+                <FaAward className="w-4 h-4" />
+                <span className="font-bold text-[10px] uppercase tracking-[0.2em]">
+                  Más de 60,000 Pacientes Felices
+                </span>
+              </div>
+
+              <h2 className="text-5xl md:text-6xl lg:text-7xl font-heading  mb-12 tracking-tighter leading-none">
+                Vidas <br />
+                <span className="text-white font-bold drop-shadow-md">
+                  reales.
+                </span>
               </h2>
 
-              <div className="grid sm:grid-cols-2 gap-8 mb-12">
-                <div>
-                  <div className="text-5xl font-black text-[#ffaa00] mb-2">
-                    60,000+
+              <div className="grid grid-cols-2 gap-6 mb-16">
+                <div className="bg-white/20 backdrop-blur-md rounded-[32px] p-8 border border-white/30 shadow-lg group hover:bg-white/30 transition-all">
+                  <div className="text-6xl font-black mb-1 tracking-tighter">
+                    60K
                   </div>
-                  <div className="text-white/80 font-medium uppercase tracking-wider text-sm">
-                    Pacientes atendidos
+                  <div className="text-[10px] font-bold uppercase tracking-widest opacity-70">
+                    Historias de éxito
                   </div>
                 </div>
-                <div>
-                  <div className="text-5xl font-black text-[#ffaa00] mb-2">
+                <div className="bg-white/20 backdrop-blur-md rounded-[32px] p-8 border border-white/30 shadow-lg group hover:bg-white/30 transition-all">
+                  <div className="text-6xl font-black mb-1 tracking-tighter">
                     15+
                   </div>
-                  <div className="text-white/80 font-medium uppercase tracking-wider text-sm">
-                    Urólogos especializados
+                  <div className="text-[10px] font-bold uppercase tracking-widest opacity-70">
+                    Urólogos top
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/10 flex items-center gap-6">
-                <div className="w-16 h-16 bg-[#ffaa00] rounded-full flex justify-center items-center flex-shrink-0 shadow-lg">
-                  <FaAward className="w-8 h-8 text-[#4B4D54]" />
+              <div className="bg-[#4B4D54] rounded-[48px] p-10 flex items-center gap-8 shadow-2xl relative overflow-hidden group">
+                <div className="w-20 h-20 bg-[#ffaa00] rounded-[24px] flex justify-center items-center flex-shrink-0 shadow-xl relative z-10 rotate-3">
+                  <FaVideo className="w-10 h-10 text-[#4B4D54]" />
                 </div>
-                <div>
-                  <h4 className="text-white font-bold text-lg">
-                    Premio Empresa del Año 2022
+                <div className="relative z-10">
+                  <h4 className="text-white font-bold text-2xl mb-2">
+                    Casos Clínicos
                   </h4>
-                  <p className="text-slate-300 text-sm">
-                    Reconocidos internacionalmente por nuestra excelencia
-                    médica.
+                  <p className="text-white/60 text-sm font-medium leading-relaxed max-w-xs">
+                    Mira cómo nuestros especialistas resuelven problemas de alta
+                    complejidad.
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Video Testimonial */}
-            <div className="relative">
-              <div className="aspect-video w-full bg-slate-800 rounded-[32px] overflow-hidden relative shadow-2xl group cursor-pointer border-4 border-slate-700 hover:border-[#ffaa00] transition-colors">
-                <img
-                  src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=1000&auto=format&fit=crop"
-                  alt="Testimonio Urozen"
-                  className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-20 h-20 bg-[#ffaa00] rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(255,170,0,0.5)] group-hover:scale-110 transition-transform">
-                    <FaPlay className="w-8 h-8 text-[#4B4D54] ml-1" />
-                  </div>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent">
-                  <div className="flex items-center gap-2 mb-1">
-                    <FaVideo className="w-4 h-4 text-[#ffaa00]" />
-                    <span className="text-[#ffaa00] font-bold text-xs uppercase tracking-widest">
-                      Testimonio Doc.
-                    </span>
-                  </div>
-                  <h4 className="text-white font-bold text-lg">
-                    Caso de Éxito: Fístula Vesicovaginal
-                  </h4>
-                </div>
-              </div>
+            {/* Right: YouTube Reels - 1.5 VISIBILITY & TALL CARDS */}
+            <div className="relative w-full overflow-hidden">
+              {/* Right Side Fade Out Mask */}
+              <div className="absolute top-0 right-0 bottom-0 w-32 z-20 bg-gradient-to-l from-[#ffaa00] to-transparent pointer-events-none"></div>
+
+              <Swiper
+                modules={[Autoplay, Pagination]}
+                spaceBetween={24}
+                slidesPerView={1.2}
+                breakpoints={{
+                  640: { slidesPerView: 1.5 },
+                  1024: { slidesPerView: 1.5 },
+                }}
+                autoplay={{ delay: 3500 }}
+                className="h-[650px]"
+              >
+                {[
+                  {
+                    id: 1,
+                    title: "Láser de Próstata de Última Generación",
+                    dr: "Dr. Postigo",
+                    img: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800",
+                  },
+                  {
+                    id: 2,
+                    title: "Eliminación de Cálculos sin Cortes",
+                    dr: "Dr. Benavides",
+                    img: "https://images.unsplash.com/photo-1551076805-e1869033e561?w=800",
+                  },
+                  {
+                    id: 3,
+                    title: "Tratamiento de Disfunción Eréctil",
+                    dr: "Dr. Alarcón",
+                    img: "https://images.unsplash.com/photo-1584432810601-6c7f27d2362b?w=800",
+                  },
+                  {
+                    id: 4,
+                    title: "Cirugía de Piso Pélvico Exitosa",
+                    dr: "Dra. García",
+                    img: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=800",
+                  },
+                ].map((reel) => (
+                  <SwiperSlide key={reel.id} className="pb-10">
+                    <div className="relative aspect-9/16 w-full rounded-[48px] overflow-hidden shadow-2xl group cursor-pointer  transition-all duration-700 h-[600px]">
+                      <img
+                        src={reel.img}
+                        alt={reel.title}
+                        className="w-full h-full object-cover  group-hover:scale-110 group-hover:opacity-100 transition-all duration-1000"
+                      />
+
+                      {/* YouTube Interaction Overlay */}
+                      <div className="absolute inset-x-0 bottom-0 p-10 bg-gradient-to-t from-black/100 via-black/40 to-transparent">
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="w-8 h-8 rounded-full bg-[#ffaa00] flex items-center justify-center border-2 border-white/20">
+                            <FaUser className="text-[#4B4D54] text-xs" />
+                          </div>
+                          <span className="text-white font-black text-xs uppercase tracking-widest">
+                            {reel.dr}
+                          </span>
+                        </div>
+                        <h4 className="text-white font-bold text-lg leading-tight mb-4 group-hover:text-[#ffaa00] transition-colors">
+                          {reel.title}
+                        </h4>
+                      </div>
+
+                      {/* Play Action Centered */}
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="w-20 h-20 bg-[#ffaa00] rounded-full flex items-center justify-center shadow-2xl transform scale-75 group-hover:scale-100 transition-transform duration-500">
+                          <FaPlay className="text-[#4B4D54] text-2xl ml-1" />
+                        </div>
+                      </div>
+                    </div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 6. 👨‍⚕️ EQUIPO MÉDICO */}
-      <section id="equipo" className="py-24 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <span className="h-[1px] w-8 bg-[#ffaa00]"></span>
-              <span className="text-[#4B4D54] font-bold text-xs uppercase tracking-widest">
-                Autoridad Médica
-              </span>
-              <span className="h-[1px] w-8 bg-[#ffaa00]"></span>
-            </div>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-light text-[#4B4D54] mb-6 tracking-tight">
-              Mentes brillantes detrás de <br />
-              <span className="font-black text-[#ffaa00]">tu salud.</span>
+      {/* 6. 👨‍⚕️ EQUIPO MÉDICO - TABBED CLINICAL DESIGN */}
+      <section className="bg-white py-32 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-20">
+            <h2 className="text-5xl md:text-6xl lg:text-7xl font-heading  text-[#4B4D54] mb-6 tracking-tighter text-center">
+              Nuestro{" "}
+              <span className="text-[#ffaa00] font-bold">Staff Médico.</span>
             </h2>
-          </div>
+            <p className="text-slate-400 max-w-2xl mx-auto text-lg leading-relaxed mb-12">
+              Contamos con los especialistas más destacados del país, listos
+              para brindarte una atención de primer nivel.
+            </p>
 
-          {/* Dr Grandez Feature */}
-          <div className="bg-white rounded-[40px] shadow-xl border border-slate-100 overflow-hidden mb-8 grid md:grid-cols-2">
-            <div className="h-80 md:h-auto relative">
-              <img
-                src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=800&auto=format&fit=crop"
-                alt="Dr. Luis Grandez"
-                className="absolute inset-0 w-full h-full object-cover object-top"
-              />
-            </div>
-            <div className="p-10 md:p-16 flex flex-col justify-center">
-              <div className="inline-flex items-center gap-2 bg-slate-100 rounded-full px-3 py-1 mb-4 w-fit">
-                <FaShieldAlt className="w-4 h-4 text-[#ffaa00]" />
-                <span className="text-xs font-bold uppercase tracking-widest text-[#4B4D54]">
-                  Director Médico
-                </span>
-              </div>
-              <h3 className="text-3xl font-heading font-black text-[#4B4D54] mb-2">
-                Dr. Luis Grandes
-              </h3>
-              <p className="text-[#ffaa00] font-bold uppercase tracking-widest text-sm mb-6">
-                CEO & CIO Urozen
-              </p>
-              <p className="text-slate-600 mb-8 leading-relaxed">
-                Pionero en cirugía urológica mínimamente invasiva en el Perú.
-                Lidera nuestra junta médica garantizando que cada diagnóstico
-                sea preciso y cada tratamiento emplee la máxima innovación
-                posible a nivel mundial.
-              </p>
-              <div className="flex items-center gap-4 border-t border-slate-100 pt-6">
-                <FaCheckCircle className="w-8 h-8 text-[#ffaa00]" />
-                <span className="text-[#4B4D54] font-bold text-sm">
-                  Certificación Internacional en Robótica Da Vinci
-                </span>
-              </div>
+            {/* Specialty Tabs */}
+            <div className="flex justify-center gap-4 mb-20">
+              {["Urólogos", "Otras Especialidades"].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setDoctorTab(tab)}
+                  className={`px-10 py-5 rounded-full font-black text-xs uppercase tracking-[0.2em] transition-all shadow-xl ${
+                    doctorTab === tab
+                      ? "bg-[#ffaa00] text-white scale-110 shadow-[#ffaa00]/20"
+                      : "bg-slate-50 text-slate-400 hover:bg-slate-100 border border-slate-200"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Grid Specialists */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="bg-white rounded-3xl p-4 border border-slate-100 shadow-sm text-center hover:-translate-y-2 transition-transform"
-              >
-                <div className="w-24 h-24 mx-auto rounded-full overflow-hidden mb-4 border-4 border-slate-50">
-                  <img
-                    src={`https://images.unsplash.com/photo-${1559839734 + i}-2b71ea197ec2?q=80&w=200&auto=format&fit=crop`}
-                    alt="Medico Especialista"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <h5 className="font-bold text-[#4B4D54] mb-1">
-                  Especialista {i}
-                </h5>
-                <p className="text-xs text--[#4B4D54] font-semibold uppercase tracking-widest">
-                  Urólogo Staff
-                </p>
-              </div>
-            ))}
-          </div>
+          {/* Doctors Grid */}
+          <div className="grid md:grid-cols-2 gap-x-16 gap-y-28">
+            {(doctorTab === "Urólogos" ? UROLOGISTS : OTHERS).map(
+              (doc, idx) => (
+                <motion.div
+                  initial={{ opacity: 0, x: idx % 2 === 0 ? -30 : 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                  viewport={{ once: true }}
+                  key={idx}
+                  className="flex flex-col lg:flex-row items-center lg:items-start gap-12 group"
+                >
+                  {/* Smaller, more elegant Image Mask */}
+                  <div className="relative flex-shrink-0">
+                    <div className="w-48 h-full lg:w-56 lg:h-full overflow-hidden rounded-full shadow-xl  relative z-10 ">
+                      <img
+                        src={doc.image}
+                        alt={doc.nombre}
+                        className="w-full h-full aspect-9/16 object-cover group-hover:scale-110 transition-transform duration-700"
+                      />
+                    </div>
+                  </div>
 
-          <div className="text-center">
-            <button className="px-8 py-4 border-2 border-[#4B4D54] text-[#4B4D54] font-black rounded-full hover:bg-[#4B4D54] hover:text-white transition-all text-sm uppercase tracking-widest">
-              Conoce a todo el equipo
-            </button>
+                  {/* Doc Details */}
+                  <div className="flex-1 text-center lg:text-left space-y-5 pt-6">
+                    <div>
+                      <h3 className="text-4xl font-heading font-black text-[#4B4D54] mb-2 leading-tight tracking-tighter">
+                        {doc.nombre}
+                      </h3>
+                      <p className="text-slate-400 font-bold text-lg mb-2">
+                        {doc.unidad}
+                      </p>
+                      <div className="bg-[#fff9e6] inline-block px-4 py-1.5 rounded-2xl border border-[#ffaa00]/10 max-w-full">
+                        <span className="text-[#ffaa00] font-black text-[10px] uppercase tracking-wider leading-tight">
+                          {doc.cmp_rne}
+                        </span>
+                      </div>
+                    </div>
+
+                    <p className="text-slate-500 text-sm leading-relaxed transition-all duration-500">
+                      {doc.bio}
+                    </p>
+
+                    <div className="flex hidden flex-wrap justify-center lg:justify-start gap-4 pt-6">
+                      <button className="flex items-center gap-3 px-8 py-4 bg-[#4B4D54] hover:bg-[#ffaa00] text-white font-black rounded-full text-[10px] uppercase tracking-[0.2em] transition-all shadow-xl hover:shadow-[#ffaa00]/30 active:scale-95 group/btn">
+                        <FaCalendarAlt className="w-3 h-3 text-[#ffaa00] group-hover/btn:text-white transition-colors" />
+                        Agendar Cita
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              ),
+            )}
           </div>
         </div>
       </section>
@@ -1203,8 +1382,9 @@ export default function App() {
       <section className="py-24 bg-slate-50 border-t border-slate-100">
         <div className="max-w-4xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-5xl md:text-6xl lg:text-7xl font-heading font-black text-[#4B4D54] tracking-tight">
-              Preguntas <span className="text-[#ffaa00]">Frecuentes</span>
+            <h2 className="text-5xl md:text-6xl lg:text-7xl font-heading  text-[#4B4D54] tracking-tight">
+              Preguntas{" "}
+              <span className="text-[#ffaa00] font-bold">Frecuentes</span>
             </h2>
           </div>
 
@@ -1252,104 +1432,178 @@ export default function App() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#ffaa00] rounded-full blur-[150px] opacity-10 pointer-events-none"></div>
 
         <div className="max-w-5xl mx-auto px-6 lg:px-8 relative z-10">
-          <div className="bg-white rounded-[40px] shadow-2xl p-8 md:p-16">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl md:text-5xl font-heading font-black text-[#4B4D54] mb-4">
-                Da el primer paso hacia tu{" "}
-                <span className="text-[#ffaa00]">bienestar urológico</span>
+          <div className="bg-white rounded-[40px] shadow-[0_32px_64px_rgba(0,0,0,0.08)] p-8 md:p-16 border border-slate-100">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-6xl font-heading text-[#4B4D54] mb-6 tracking-tighter">
+                Da el primer paso hacia tu <br />
+                <span className="text-[#ffaa00] font-bold">
+                  bienestar urológico.
+                </span>
               </h2>
-              <p className="text-[#4B4D54]">
-                Déjanos tus datos. Te aseguramos total confidencialidad.
+              <p className="text-slate-400 text-lg max-w-xl mx-auto leading-relaxed">
+                Déjanos tus datos y un coordinador especializado se pondrá en
+                contacto contigo de forma{" "}
+                <span className="font-bold text-[#4B4D54]">
+                  100% confidencial.
+                </span>
               </p>
             </div>
 
             <form
-              className="space-y-6"
+              className="max-w-4xl mx-auto space-y-8"
               onSubmit={(e) => {
                 e.preventDefault();
-                alert("Cita Agendada Correctamente.");
+                alert("Solicitud recibida. Te contactaremos pronto.");
               }}
             >
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-xs font-bold text-[#4B4D54] uppercase tracking-widest mb-2">
-                    Nombre Completo *
+              <div className="grid md:grid-cols-2 gap-8">
+                {/* Name */}
+                <div className="space-y-3">
+                  <label className="flex items-center gap-2 text-[10px] font-black text-[#4B4D54] uppercase tracking-[0.2em] ml-2">
+                    <FaUser className="text-[#ffaa00]" /> Nombre Completo *
                   </label>
                   <input
                     type="text"
                     placeholder="Ej. Juan Pérez"
-                    className="w-full bg-slate-50 border border-slate-200 px-5 py-4 focus:outline-none focus:border-[#ffaa00] focus:ring-1 focus:ring-[#ffaa00] transition-all rounded-2xl text-[#4B4D54]"
+                    className="w-full bg-slate-50 border border-slate-100 px-6 py-5 focus:outline-none focus:border-[#ffaa00] focus:bg-white transition-all rounded-3xl text-[#4B4D54] shadow-sm text-sm"
                     required
                   />
                 </div>
-                <div>
-                  <label className="block text-xs font-bold text-[#4B4D54] uppercase tracking-widest mb-2">
-                    Teléfono Móvil *
+
+                {/* Email */}
+                <div className="space-y-3">
+                  <label className="flex items-center gap-2 text-[10px] font-black text-[#4B4D54] uppercase tracking-[0.2em] ml-2">
+                    <FaEnvelope className="text-[#ffaa00]" /> Correo Electrónico
+                    *
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="juan.perez@ejemplo.com"
+                    className="w-full bg-slate-50 border border-slate-100 px-6 py-5 focus:outline-none focus:border-[#ffaa00] focus:bg-white transition-all rounded-3xl text-[#4B4D54] shadow-sm text-sm"
+                    required
+                  />
+                </div>
+
+                {/* Phone */}
+                <div className="space-y-3">
+                  <label className="flex items-center gap-2 text-[10px] font-black text-[#4B4D54] uppercase tracking-[0.2em] ml-2">
+                    <FaPhone className="text-[#ffaa00]" /> Teléfono Móvil *
                   </label>
                   <input
                     type="tel"
                     placeholder="987 654 321"
-                    className="w-full bg-slate-50 border border-slate-200 px-5 py-4 focus:outline-none focus:border-[#ffaa00] focus:ring-1 focus:ring-[#ffaa00] transition-all rounded-2xl text-[#4B4D54]"
+                    className="w-full bg-slate-50 border border-slate-100 px-6 py-5 focus:outline-none focus:border-[#ffaa00] focus:bg-white transition-all rounded-3xl text-[#4B4D54] shadow-sm text-sm"
                     required
                   />
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-xs font-bold text-[#4B4D54] uppercase tracking-widest mb-2">
-                  Motivo de consulta *
-                </label>
-                <div className="relative">
-                  <select
-                    required
-                    className="w-full bg-slate-50 border border-slate-200 px-5 py-4 focus:outline-none focus:border-[#ffaa00] focus:ring-1 focus:ring-[#ffaa00] transition-all rounded-2xl text-[#4B4D54] appearance-none"
-                  >
-                    <option value="" disabled selected>
-                      Selecciona una opción
-                    </option>
-                    <option value="general">Urología General</option>
-                    <option value="prostata">Problemas de Próstata</option>
-                    <option value="disfuncion">Disfunción Eréctil</option>
-                    <option value="femenina">Urología Femenina</option>
-                    <option value="oncologia">Oncología Urológica</option>
-                    <option value="otro">Otro motivo</option>
-                  </select>
-                  <FaChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text--[#4B4D54] pointer-events-none" />
+                {/* Custom Specialty Dropdown */}
+                <div className="space-y-3">
+                  <label className="flex items-center gap-2 text-[10px] font-black text-[#4B4D54] uppercase tracking-[0.2em] ml-2">
+                    <FaBriefcaseMedical className="text-[#ffaa00]" /> Motivo de
+                    consulta *
+                  </label>
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                      className="w-full bg-slate-50 border border-slate-100 px-6 py-5 text-left rounded-3xl text-sm focus:outline-none flex justify-between items-center transition-all hover:bg-slate-100"
+                    >
+                      <span
+                        className={
+                          selectedSpecialty
+                            ? "text-[#4B4D54]"
+                            : "text-slate-400"
+                        }
+                      >
+                        {selectedSpecialty || "Selecciona una especialidad"}
+                      </span>
+                      <FaChevronDown
+                        className={`w-4 h-4 text-[#ffaa00] transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""}`}
+                      />
+                    </button>
+
+                    <AnimatePresence>
+                      {isDropdownOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                          className="absolute z-50 w-full mt-2 bg-white border border-slate-100 rounded-3xl shadow-2xl overflow-hidden py-2"
+                        >
+                          {[
+                            "Urología General",
+                            "Urología Oncológica",
+                            "Urología Pediátrica",
+                            "Disfunción Eréctil",
+                            "Cálculos Renales",
+                            "Piso Pélvico",
+                            "Chequeo Preventivo",
+                          ].map((option) => (
+                            <button
+                              key={option}
+                              type="button"
+                              className="w-full px-6 py-3 text-left text-sm text-[#4B4D54] hover:bg-[#ffaa00]/10 hover:text-[#ffaa00] transition-colors"
+                              onClick={() => {
+                                setSelectedSpecialty(option);
+                                setIsDropdownOpen(false);
+                              }}
+                            >
+                              {option}
+                            </button>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 mt-8">
-                <input
-                  type="checkbox"
-                  id="privacy"
-                  required
-                  className="mt-1 w-4 h-4 text-[#ffaa00] border-slate-300 rounded focus:ring-[#ffaa00]"
-                />
+              {/* Privacy Policy */}
+              <div className="flex items-start gap-4 bg-slate-50/50 p-6 rounded-3xl border border-slate-100">
+                <div className="relative flex items-center h-5">
+                  <input
+                    type="checkbox"
+                    id="privacy"
+                    required
+                    className="w-5 h-5 text-[#ffaa00] border-slate-200 rounded-lg focus:ring-[#ffaa00] cursor-pointer"
+                  />
+                </div>
                 <label
                   htmlFor="privacy"
-                  className="text-sm text-[#4B4D54] leading-tight cursor-pointer"
+                  className="text-xs text-slate-500 leading-relaxed cursor-pointer"
                 >
-                  Acepto la{" "}
+                  Acepto el tratamiento de mis datos personales de acuerdo con
+                  la{" "}
                   <a
                     href="#"
-                    className="font-bold text-[#ffaa00] hover:underline"
+                    className="font-bold text-[#ffaa00] hover:underline underline-offset-4"
                   >
-                    política de privacidad
-                  </a>{" "}
-                  y el uso de mis datos para ser contactado.
+                    Política de Privacidad
+                  </a>
+                  . Entiendo que seré contactado únicamente para fines médicos y
+                  administrativos relacionados con mi consulta.
                 </label>
               </div>
 
-              <div className="pt-6">
+              {/* Submit Section */}
+              <div className="text-center space-y-6 pt-4">
                 <button
                   type="submit"
-                  className="w-full bg-[#ffaa00] text-white font-black text-lg uppercase tracking-widest py-6 rounded-full hover:shadow-[0_8px_30px_rgba(255,170,0,0.3)] transition-all flex justify-center items-center gap-3 group"
+                  className="w-full md:w-auto px-16 py-6 bg-[#ffaa00] text-white font-black text-sm uppercase tracking-[0.3em] rounded-full hover:shadow-[0_20px_40px_rgba(255,170,0,0.3)] hover:-translate-y-1 active:scale-95 transition-all flex justify-center items-center gap-3 mx-auto"
                 >
-                  <FaCheckCircle className="w-6 h-6" /> Agendar Ahora
+                  <FaCheckCircle className="w-5 h-5" /> Enviar Solicitud
                 </button>
-                <p className="text-center text-xs text--[#4B4D54] font-bold uppercase tracking-widest mt-4">
-                  Te contactamos en menos de 24h • Confidencialidad garantizada
-                </p>
+                <div className="flex flex-col md:flex-row items-center justify-center gap-6 text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                  <span className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />{" "}
+                    Respuesta en menos de 24h
+                  </span>
+                  <span className="hidden md:block text-slate-200">|</span>
+                  <span className="flex items-center gap-2">
+                    <FaShieldAlt className="text-[#ffaa00]" /> 100% Confidencial
+                  </span>
+                </div>
               </div>
             </form>
           </div>
@@ -1373,23 +1627,35 @@ export default function App() {
             </p>
             <div className="flex gap-4">
               <a
-                href="#"
-                className="w-10 h-10 bg-white rounded-full text-[#4B4D54] flex items-center justify-center hover:bg-[#ffaa00] transition-colors shadow-sm border border-slate-100"
+                href="https://www.facebook.com/centromedicourozen"
+                className="w-10 h-10 bg-white hover:text-white rounded-full text-[#4B4D54] flex items-center justify-center hover:bg-[#ffaa00] transition-colors shadow-sm border border-slate-100"
               >
                 <FaFacebookF className="w-5 h-5" />
               </a>
               <a
-                href="#"
-                className="w-10 h-10 bg-white rounded-full text-[#4B4D54] flex items-center justify-center hover:bg-[#ffaa00] transition-colors shadow-sm border border-slate-100"
+                href="https://www.instagram.com/centro.urozen/"
+                className="w-10 h-10 bg-white hover:text-white rounded-full text-[#4B4D54] flex items-center justify-center hover:bg-[#ffaa00] transition-colors shadow-sm border border-slate-100"
               >
                 <FaInstagram className="w-5 h-5" />
               </a>
               {/* Note: TikTok icon is not standard in lucide-react, using Play as fallback representation for video social */}
               <a
-                href="#"
-                className="w-10 h-10 bg-white rounded-full text-[#4B4D54] flex items-center justify-center hover:bg-[#ffaa00] transition-colors shadow-sm border border-slate-100"
+                href="https://www.tiktok.com/@centromedicourozen"
+                className="w-10 h-10 bg-white  hover:text-white rounded-full text-[#4B4D54] flex items-center justify-center hover:bg-[#ffaa00] transition-colors shadow-sm border border-slate-100"
               >
-                <FaPlay className="w-4 h-4 ml-0.5" />
+                <BsTiktok className="w-4 h-4 ml-0.5" />
+              </a>
+              <a
+                href="https://www.linkedin.com/company/urozen/"
+                className="w-10 h-10 bg-white hover:text-white rounded-full text-[#4B4D54] flex items-center justify-center hover:bg-[#ffaa00] transition-colors shadow-sm border border-slate-100"
+              >
+                <FaLinkedinIn className="w-4 h-4 ml-0.5" />
+              </a>
+              <a
+                href="hhttps://www.youtube.com/@urozen"
+                className="w-10 h-10 bg-white hover:text-white rounded-full text-[#4B4D54] flex items-center justify-center hover:bg-[#ffaa00] transition-colors shadow-sm border border-slate-100"
+              >
+                <BsYoutube className="w-4 h-4 ml-0.5" />
               </a>
             </div>
           </div>
